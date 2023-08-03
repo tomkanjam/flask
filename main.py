@@ -10,15 +10,15 @@ client = UMFutures(api_key, api_secret, base_url='https://testnet.binancefuture.
 
 app = Flask(__name__)
 
-TRADE_AMOUNT = .001
-
 @app.route('/webhook', methods=['POST'])
 def webhook():
     data = request.get_json()
+    # print(data)
     logging.info(f'Received alert: {data}')
 
     action = data.get('action')
     symbol = data.get('ticker')
+    trade_amount = float(data.get('trade_amount', '0.001'))  # Convert to float and default to 0.001 if 'trade_amount' is not in data
 
     # Fetch current position
     current_positions = client.get_position_risk(symbol=symbol)
@@ -45,7 +45,7 @@ def webhook():
     # Open new market order
     order_side = "BUY" if action == 'buy' else "SELL"
     client.new_order(symbol=symbol, side=order_side, type='MARKET', 
-                 quantity=TRADE_AMOUNT)
+                 quantity=trade_amount)
 
     return {
         "code": "success",
@@ -54,3 +54,4 @@ def webhook():
 
 if __name__ == "__main__":
     app.run(port=5000)
+
