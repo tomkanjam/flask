@@ -15,8 +15,9 @@ TRADE_AMOUNT = .001
 @app.route('/webhook', methods=['POST'])
 def webhook():
     data = request.get_json()
+    logging.info(f'Received alert: {data}')
 
-    action = data.get('strategy.order.action')
+    action = data.get('action')
     symbol = data.get('ticker')
 
     # Fetch current position
