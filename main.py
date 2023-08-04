@@ -13,6 +13,15 @@ live_client = UMFutures(live_api_key, live_api_secret)
 test_client = UMFutures(test_api_key, test_api_secret, base_url='https://testnet.binancefuture.com')
 
 app = Flask(__name__)
+start_time = datetime.now()  # Mark the time when the app starts
+
+@app.route('/uptime9164', methods=['GET'])
+def uptime9164():
+    uptime = (datetime.now() - start_time) / 60
+    return {
+        "code": "success",
+        "message": f"Server has been running for {uptime} minutes"
+    }, 200
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
